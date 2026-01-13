@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Multi File Upload</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #0f0f0f;
+      color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .box {
+      background: #1c1c1c;
+      padding: 30px;
+      border-radius: 8px;
+      width: 360px;
+      text-align: center;
+    }
+    input, button {
+      width: 100%;
+      margin-top: 15px;
+      padding: 10px;
+    }
+    button {
+      background: #4caf50;
+      border: none;
+      cursor: pointer;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <div class="box">
+    <h2>Upload Files</h2>
+    <p>Max 10 audio/video files</p>
+    <form method="POST" action="/upload" enctype="multipart/form-data">
+      <input type="file" name="files" multiple required>
+      <button type="submit">Upload & Process</button>
+    </form>
+  </div>
+</body>
+</html>
