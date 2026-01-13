@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Kaizen – Multi-file Upload</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 30px;
+    }
+    h1 {
+      margin-bottom: 10px;
+    }
+    button {
+      padding: 8px 14px;
+      margin-top: 10px;
+      cursor: pointer;
+    }
+    .downloads {
+      margin-top: 20px;
+      padding: 15px;
+      background: #f4f4f4;
+      border-radius: 5px;
+    }
+    .download-item {
+      margin-bottom: 10px;
+    }
+    .hidden {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Kaizen – Multi-file upload (max 10 files)</h1>
+
+  <input type="file" id="files" multiple />
+  <br>
+  <button onclick="upload()">Upload & Process</button>
+
+  <div id="status"></div>
+
+  <div id="downloads" class="downloads hidden">
+    <h3>Downloads</h3>
+    <div id="downloadList"></div>
+    <button onclick="resetUI()">Upload More Files</button>
+  </div>
+
+  <script>
+    async function upload() {
+      const input = document.getElementById('files');
+      if (!input.files.length) {
+        alert('Select files first');
+        return;
+      }
+
+      const form = new FormData();
+      for (const file of input.files) {
+        form.append('media', file);
+      }
+
+      document.getElementById('status').innerText = 'Processing… please wait';
+      document.getElementById('downloads').classList.add('hidden');
+      document.getElementById('downloadList').innerHTML = '';
+
+      const res = await fetch('/process', {
+        method: 'POST',
+        body: form
+      });
+
+      const data = await res.json();
+
+      document.getElementById('status').innerText = 'Processing complete';
+
+      const list = document.getElementById('downloadList');
+      data.files.forEach(f => {
+        const div = document.createElement('div');
+        div.className = 'download-item';
+        div.innerHTML = `
+          <a href="${f.download}" download>
+            <button>Download ${f.name}</button>
+          </a>
+        `;
+        list.appendChild(div);
+      });
+
+      document.getElementById('downloads').classList.remove('hidden');
+    }
+
+    function resetUI() {
+      document.getElementById('files').value = '';
+      document.getElementById('status').innerText = '';
+      document.getElementById('downloads').classList.add('hidden');
+      document.getElementById('downloadList').innerHTML = '';
+    }
+  </script>
+
+</body>
+</html>
